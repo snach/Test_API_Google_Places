@@ -116,39 +116,22 @@ class TestRadius:
 
     def test_more_radius_more_places(self):
         r = requests.get(self.BASE_URL + "&radius=1")
-        r_json = check_request_status_OK(r)
-        qty_places_small_radius = len(r_json.get('results'))
+        r_json_small = check_request_status_OK(r)
+        qty_places_small_radius = len(r_json_small.get('results'))
 
         r = requests.get(self.BASE_URL + "&radius=100")
-        r_json = check_request_status_OK(r)
-        qty_places_big_radius = len(r_json.get('results'))
+        r_json_big = check_request_status_OK(r)
+        qty_places_big_radius = len(r_json_big.get('results'))
 
         assert (qty_places_small_radius < qty_places_big_radius)
 
+        names_small = dict()
+        for i in range(len(r_json_small.get('results'))):
+            names_small[r_json_small.get('results')[i].get('name')] = 1
+        names_big = dict()
+        for i in range(len(r_json_big.get('results'))):
+            names_big[r_json_big.get('results')[i].get('name')] = 1
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        for key in names_small.keys():
+            assert (key in names_big)
 
