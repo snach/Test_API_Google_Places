@@ -1,15 +1,8 @@
 import os
+
 import requests
 
-
-def check_keys(need_keys, response_keys): # check existence response_keys in need_keys
-
-    for key in need_keys:
-        assert (key in response_keys)
-        delete_index = response_keys.index(key)
-        del response_keys[delete_index]
-
-    assert (len(response_keys) == 0)
+from tests import utils
 
 
 class TestKeysAPI:
@@ -21,19 +14,19 @@ class TestKeysAPI:
             exit()
         r = requests.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
                          'location=55.797208,37.5355793&radius=1&key=' + KEY)
+        utils.check_request_status_OK(r)
         self.r_json = r.json()
         self.one_result = self.r_json.get('results')[0]
-        # check_ok_response
 
     def test_first_level_including(self):
         need_keys = ('html_attributions', 'results', 'status')
         response_keys = list(self.r_json.keys())
-        check_keys(need_keys, response_keys)
+        utils.check_keys(need_keys, response_keys)
 
     def test_keys_in_results(self):
         need_keys = ('geometry', 'icon', 'id', 'name', 'photos', 'place_id', 'reference', 'scope', 'types', 'vicinity')
         response_keys = list(self.one_result.keys())
-        check_keys(need_keys, response_keys)
+        utils.check_keys(need_keys, response_keys)
 
     def test_results_geometry(self):
 
@@ -42,48 +35,27 @@ class TestKeysAPI:
         geometry = self.one_result.get('geometry')
         need_keys_geometry = ('location', 'viewport')
         response_keys_geometry = list(geometry.keys())
-        check_keys(need_keys_geometry, response_keys_geometry)
+        utils.check_keys(need_keys_geometry, response_keys_geometry)
 
         location = geometry.get('location')
         response_keys_location = list(location.keys())
-        check_keys(need_keys_coordinates, response_keys_location)
+        utils.check_keys(need_keys_coordinates, response_keys_location)
 
         viewport = geometry.get('viewport')
         need_keys_viewport = ('northeast', 'southwest')
         response_keys_viewport = list(viewport.keys())
-        check_keys(need_keys_viewport, response_keys_viewport)
+        utils.check_keys(need_keys_viewport, response_keys_viewport)
 
         northeast = viewport.get('northeast')
         response_keys_northeast = list(northeast.keys())
-        check_keys(need_keys_coordinates, response_keys_northeast)
+        utils.check_keys(need_keys_coordinates, response_keys_northeast)
 
         southwest = viewport.get('southwest')
         response_keys_southwest = list(southwest.keys())
-        check_keys(need_keys_coordinates, response_keys_southwest)
+        utils.check_keys(need_keys_coordinates, response_keys_southwest)
 
     def test_results_photos(self):
         photos = self.one_result.get('photos')[0]
         need_keys_photos = ('height', 'html_attributions', 'photo_reference', 'width')
         response_keys_photos = list(photos.keys())
-        check_keys(need_keys_photos, response_keys_photos)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        utils.check_keys(need_keys_photos, response_keys_photos)

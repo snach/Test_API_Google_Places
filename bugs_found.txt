@@ -1,0 +1,18 @@
+1. Отсутствует место(place) из запроса с keyword в запросе без keyword (запросы с одинаковым radius)
+
+    как воспроизвести:
+
+        запрос без keyword: curl "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=<API_KEY>&location=55.797208,37.5355793&radius=100" | grep -E "name|next_page_token"
+            "name" : "Moscow",
+            "name" : "Кристалл+ Торгово-сервисная Компания",
+            "name" : "Kukhni Sokol Salon Mebeli",
+            "name" : "The Moscow Times",
+            "name" : "Khoroshyovsky District",
+        запрос с keyword: curl "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=<API_KEY>&location=55.797208,37.5355793&radius=100&keyword=starbucks" | grep -E "name|next_page_token"
+            "name" : "Starbucks",
+
+    ожидаемое поведение:
+        1. место с "name" : "Starbucks" ищется по запросу БЕЗ keyword
+        2. место с "name" : "Starbucks" НЕ ищется по запросу С keyword
+
+    иначе неопределенность в использовании API
